@@ -1,11 +1,6 @@
 const adhan = require("adhan");
 const moment = require("moment");
 
-let date = new Date();
-date = moment(date)
-  .subtract(9, "days")
-  .toDate();
-
 // Casablanca
 // const coordinates = new adhan.Coordinates(33.589886, -7.603869);
 
