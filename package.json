@@ -1,0 +1,19 @@
+{
+  "name": "testPrayers",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index"
+  },
+  "keywords": [],
+  "author": "Kafil Nasdami<kafil.nasdami@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "adhan": "^3.0.0",
+    "moment": "^2.24.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.0"
+  }
+}
