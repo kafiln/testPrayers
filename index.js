@@ -2,16 +2,21 @@ const adhan = require("adhan");
 const moment = require("moment");
 
 // Casablanca
-// const coordinates = new adhan.Coordinates(33.589886, -7.603869);
+const coordinates = new adhan.Coordinates(33.58831,-7.61138);
 
-// Rabat 
-const coordinates = new adhan.Coordinates(34.01325,-6.83255);
+// Rabat
+// const coordinates = new adhan.Coordinates(33.9716,-6.8498);
 
 
 // Params
 const params = adhan.CalculationMethod.Other();
 params.fajrAngle = 19;
-params.ishaAngle = 19;
+params.ishaAngle = 17;
+params.madhab = adhan.Madhab.Shafi;
+
+params.adjustments.sunrise=-3;
+params.adjustments.dhuhr=5;
+params.adjustments.maghrib=4;
 
 getPrayers = date => {
   const prayerTimes = new adhan.PrayerTimes(coordinates, date, params);
@@ -25,12 +30,9 @@ getPrayers = date => {
 
 const monthResult = [];
 
-// Go back to the first day of ramadan
-let tempdate = moment()
-  .subtract(8, "days")
-  .toDate();
+let tempdate = new Date(2020,4,1)
 
-for (var i = 1; i <= 29; i++) {
+for (var i = 1; i <= 32; i++) {
 
   const dailyResult = getPrayers(tempdate);
   monthResult[moment.utc(tempdate).format("DD_MM")] = dailyResult;
@@ -40,7 +42,7 @@ for (var i = 1; i <= 29; i++) {
 }
 
 Object.keys(monthResult).forEach(e=>{
-    // console.log(monthResult[e].sunrise);
-    console.log(`${monthResult[e].isha} - ${monthResult[e].maghrib} - ${monthResult[e].asr} - ${monthResult[e].dhuhr} - ${monthResult[e].sunrise} - ${monthResult[e].fajr} - ${e}`)
+    console.log(e, monthResult[e].fajr,monthResult[e].sunrise,monthResult[e].dhuhr,monthResult[e].asr,monthResult[e].maghrib,monthResult[e].isha);
+    // console.log(`${monthResult[e].isha} - ${monthResult[e].maghrib} - ${monthResult[e].asr} - ${monthResult[e].dhuhr} - ${monthResult[e].sunrise} - ${monthResult[e].fajr} - ${e}`)
 })
 // console.log(result);

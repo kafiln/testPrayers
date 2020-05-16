@@ -11,9 +11,11 @@
   "license": "ISC",
   "dependencies": {
     "adhan": "^3.0.0",
-    "moment": "^2.24.0"
+    "axios": "^0.19.2",
+    "moment": "^2.25.3",
+    "prettier": "^2.0.5"
   },
   "devDependencies": {
-    "nodemon": "^1.19.0"
+    "nodemon": "^2.0.4"
   }
 }
