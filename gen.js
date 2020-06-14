@@ -1,15 +1,15 @@
-const moment = require("moment");
-const util = require("util");
-const exec = util.promisify(require("child_process").exec);
-const axios = require("axios");
+const moment = require('moment');
+const util = require('util');
+const fs = require('fs');
+const exec = util.promisify(require('child_process').exec);
+const axios = require('axios');
 
-const KEY = "f37b8544cd4e4b23b27f63f9da515c15";
+const KEY = 'f37b8544cd4e4b23b27f63f9da515c15';
 
 const gps = (name) =>
   `https://api.opencagedata.com/geocode/v1/json?key=${KEY}&q=${name},Morocco`;
 
-const prayers = (id) =>
-  `https://maroc-salat.herokuapp.com/prayer?cityId=${id}&lang=fr-fr`;
+const prayers = (id) => `https://maroc-salat.herokuapp.com/prayer?cityId=${id}`;
 
 const getRawData = async (id) => {
   const response = await axios.get(prayers(id));
@@ -26,11 +26,11 @@ const getLocalisation = async (name) => {
   ];
 };
 
-const toTimeFormat = (data) => moment(data).format("h:mm A");
+const toTimeFormat = (data) => moment(data).format('h:mm A');
 
 const transformData = (raw) => {
   return raw.map((result) => ({
-    date: moment(result.day).format("YYYY-MM-DD"),
+    date: moment(result.day).format('YYYY-MM-DD'),
     fajr: toTimeFormat(result.fajr),
     sunrise: toTimeFormat(result.chorouq),
     dhuhr: toTimeFormat(result.dhuhr),
@@ -40,28 +40,34 @@ const transformData = (raw) => {
   }));
 };
 
-const toTestFormat = (latitude, longitude, times, variance = 1) => ({
+const toTestFormat = (latitude, longitude, times, variance = 2) => ({
   params: {
     latitude,
     longitude,
-    timezone: "Africa/Casablanca",
-    method: "Morocco",
+    timezone: 'Africa/Casablanca',
+    method: 'Morocco',
   },
-  source: ["http://www.habous.gov.ma/fr/horaire-priere.html"],
+  source: ['http://www.habous.gov.ma/fr/horaire-priere.html'],
   variance,
   times,
 });
 
 const toFile = async (name, data) => {
   const filename = `tests/${name}-Morocco.json`;
-  require("fs").writeFileSync(filename, JSON.stringify(data));
+  fs.writeFileSync(filename, JSON.stringify(data));
   const { stdout, stderr } = await exec(`npx prettier --write ${filename}`);
+  console.log(stdout);
 };
 
-const main = async (name, id, variance = 1) => {
+const main = async (name, id, variance = 2) => {
   const start = Date.now();
-  console.log("Starting the generation at ", toTimeFormat(start));
-  console.log("Getting the localisation for", name);
+  const dir = './tests';
+  if (!fs.existsSync(dir)) {
+    console.log('Creating folder ', dir);
+    fs.mkdirSync(dir);
+  }
+  console.log('Starting the generation at ', toTimeFormat(start));
+  console.log('Getting the localisation for', name);
   const [latitude, longitude] = await getLocalisation(name);
   const data = await getRawData(id);
   const mapped = transformData(data);
